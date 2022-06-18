@@ -1,0 +1,17 @@
+.notification_container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  background-color: aliceblue;
+  color: antiquewhite;
+}
+
+.notification_error {
+  background-color: red;
+}
+.notification_success {
+  background-color: green;
+}
