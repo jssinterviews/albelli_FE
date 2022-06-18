@@ -26,6 +26,7 @@ function Home() {
 
   const [imageObject, setImageObject] = useState<CanvasImageSource>();
   const [imageData, setImageData] = useState("");
+  const [imageName, setImageName] = useState("");
   const [imageCoords, setImageCoords] = useState({ x: 0, y: 0 });
   const [imagesDimensions, setImagesDimensions] = useState({
     width: 0,
@@ -48,6 +49,7 @@ function Home() {
       img.src = imageData;
     }
   };
+
   const coordsGeneratorByPosition = {
     left: { x: imageCoords.x - 5, y: imageCoords.y },
     right: { x: imageCoords.x + 5, y: imageCoords.y },
@@ -136,6 +138,7 @@ function Home() {
             setImageObject(img);
             setCanvasContext(context);
             setImageData(dataURL);
+            setImageName(imageFile.name);
             setImageCoords({ x: 0, y: 0 });
             setImagesDimensions({ width, height });
             setCanvasDimensions({ width: canvas.width, height: canvas.height });
@@ -161,10 +164,30 @@ function Home() {
         canvasDimensions.width,
         canvasDimensions.height
       );
-      setImageObject(undefined);
-      setImageData("");
-      setImageCoords({ x: 0, y: 0 });
     }
+  };
+
+  const saveData = () => {
+    const object = {
+      canvas: {
+        width: canvasDimensions.width,
+        height: canvasDimensions.height,
+        photo: {
+          id: `${imageName}_albelli`,
+          data: imageData,
+          width: imagesDimensions.width,
+          height: imagesDimensions.height,
+          x: imageCoords.x,
+          y: imageCoords.y,
+        },
+      },
+    };
+    const a = document.createElement("a");
+    a.href = `data:text/plain,${JSON.stringify(object)}`;
+    a.download = `${object.canvas.photo.id}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   return (
@@ -196,9 +219,14 @@ function Home() {
           <button onClick={() => moveImage("down")}>down</button>
           <button onClick={() => moveImage("right")}>right</button>
         </div>
+        <Spacer spacing={1} />
         <div style={{ display: "flex" }}>
           <button onClick={() => rescaleImage("in")}>zoom in</button>
           <button onClick={() => rescaleImage("out")}>zoom out</button>
+        </div>
+        <Spacer spacing={1} />
+        <div style={{ display: "flex" }}>
+          <button onClick={() => saveData()}>Download file</button>
         </div>
         <Spacer spacing={1} />
         <label htmlFor="file-input" style={{ marginBottom: 4 }}>
